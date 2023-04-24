@@ -38,3 +38,7 @@
 .\obj\onenet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\obj\onenet.o: .\System\delay.h
 .\obj\onenet.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\onenet.o: Hardware\cJSON.h
+.\obj\onenet.o: Hardware\LED.h
+.\obj\onenet.o: Hardware\oled.h
+.\obj\onenet.o: Hardware\GUI.h

@@ -2,20 +2,20 @@
 #include "delay.h"
 
 
-
+//SGP30_GPIO_初始化
 void SGP30_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  RCC_APB2PeriphClockCmd(SGP30_SCL_GPIO_CLK | SGP30_SDA_GPIO_SDA, ENABLE);
+  RCC_APB2PeriphClockCmd(SGP30_SCL_GPIO_CLK | SGP30_SDA_GPIO_SDA, ENABLE);    //开启时钟
 
   GPIO_InitStructure.GPIO_Pin = SGP30_SCL_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(SGP30_SCL_GPIO_PORT, &GPIO_InitStructure);
+  GPIO_Init(SGP30_SCL_GPIO_PORT, &GPIO_InitStructure);    //初始化GPIO口
 
   GPIO_InitStructure.GPIO_Pin = SGP30_SDA_GPIO_PIN;
-  GPIO_Init(SGP30_SDA_GPIO_PORT, &GPIO_InitStructure);
+  GPIO_Init(SGP30_SDA_GPIO_PORT, &GPIO_InitStructure);		//初始化GPIO口
 }
 
 
@@ -164,7 +164,7 @@ u16 SGP30_IIC_Read_Byte(u8 ack)
 void SGP30_Init(void)
 {
   SGP30_GPIO_Init();
-  SGP30_Write(0x20, 0x03);
+  SGP30_Write(0x20, 0x03);//对SGP30进行初始化操作
 //	SGP30_ad_write(0x20,0x61);
 //	SGP30_ad_write(0x01,0x00);
 }

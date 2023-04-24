@@ -41,3 +41,5 @@
 .\obj\main.o: .\System\sys.h
 .\obj\main.o: .\Hardware\onenet.h
 .\obj\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\obj\main.o: .\Hardware\oled.h
+.\obj\main.o: .\Hardware\GUI.h

@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include "esp8266.h"
 
-#define ESP8266_WIFI_INFO		"AT+CWJAP=\"TP-LINK_DAFB\",\"1202chen\"\r\n"
-
+//#define ESP8266_WIFI_INFO		"AT+CWJAP=\"iPhone 11\",\"7815csdd\"\r\n"
+#define ESP8266_WIFI_INFO		"AT+CWJAP=\"TP-LINK_6C10\",\"think123.\"\r\n"
 #define ESP8266_ONENET_INFO		"AT+CIPSTART=\"TCP\",\"42.194.214.101\",1883\r\n"
 
 unsigned char esp8266_buf[128];
@@ -82,8 +82,8 @@ _Bool ESP8266_SendCmd(char *cmd, char *res)
 	
 	unsigned char timeOut = 200;
 
-	
-	Usart3_SendString((unsigned char *)cmd, strlen((const char *)cmd));
+	Serial3_SendString((uint8_t *)cmd);
+	//Usart3_SendString((unsigned char *)cmd, strlen((const char *)cmd));
 	
 	while(timeOut--)
 	{
@@ -91,6 +91,7 @@ _Bool ESP8266_SendCmd(char *cmd, char *res)
 		{
 			if(strstr((const char *)esp8266_buf, res) != NULL)		//如果检索到关键词
 			{
+				printf("cmd_esp8266_buf:  %s\r\n",esp8266_buf);
 				ESP8266_Clear();									//清空缓存
 				
 				return 0;
@@ -147,14 +148,18 @@ unsigned char *ESP8266_GetIPD(unsigned short timeOut)
 
 	char *ptrIPD = NULL;
 	
+	//printf("esp8266_cnt=  %d\r\n",esp8266_cnt);
+	
 	do
-	{
+	{	
+		
 		if(ESP8266_WaitRecive() == REV_OK)								//如果接收完成
 		{
+			printf("rec_esp8266_buf:  %s\r\n",esp8266_buf);
 			ptrIPD = strstr((char *)esp8266_buf, "IPD,");				//搜索“IPD”头
 			if(ptrIPD == NULL)											//如果没找到，可能是IPD头的延迟，还是需要等待一会，但不会超过设定的时间
 			{
-				//UsartPrintf(USART_DEBUG, "\"IPD\" not found\r\n");
+				UsartPrintf(USART_DEBUG, "\"IPD\" not found\r\n");
 			}
 			else
 			{
@@ -198,26 +203,27 @@ void ESP8266_Init(void)
 	while(ESP8266_SendCmd("AT\r\n", "OK"))
 		delay_ms(500);
 	UsartPrintf(USART_DEBUG, "1. RST\r\n");
-	ESP8266_SendCmd("AT+RST\r\n", "");
+	ESP8266_SendCmd("AT+RST\r\n", "");    //重启
 	delay_ms(500);
 	
 	ESP8266_SendCmd("AT+CIPCLOSE\r\n", "");
 	delay_ms(500);
 	UsartPrintf(USART_DEBUG, "2. CWMODE\r\n");
-	while(ESP8266_SendCmd("AT+CWMODE=1\r\n", "OK"))
+	while(ESP8266_SendCmd("AT+CWMODE=1\r\n", "OK")) //设置为STA模式
 		delay_ms(500);
 	
 	UsartPrintf(USART_DEBUG, "3. AT+CWDHCP\r\n");
-	while(ESP8266_SendCmd("AT+CWDHCP=1,1\r\n", "OK"))
+	while(ESP8266_SendCmd("AT+CWDHCP=1,1\r\n", "OK"))  //设置DHCP开关
 		delay_ms(500);
 	
 	UsartPrintf(USART_DEBUG, "4. CWJAP\r\n");
-	while(ESP8266_SendCmd(ESP8266_WIFI_INFO, "GOT IP"))
-		delay_ms(500);
+	//GOT IP
+	while(ESP8266_SendCmd(ESP8266_WIFI_INFO, "GOT IP"))   //加入热点
+		delay_ms(1000);
 	
 	UsartPrintf(USART_DEBUG, "5. CIPSTART\r\n");
-	while(ESP8266_SendCmd(ESP8266_ONENET_INFO, "CONNECT"))
-		delay_ms(500);
+	while(ESP8266_SendCmd(ESP8266_ONENET_INFO, "CONNECT"))   //建立TCP连接
+		delay_ms(1000);
 	
 	UsartPrintf(USART_DEBUG, "6. ESP8266 Init OK\r\n");
 

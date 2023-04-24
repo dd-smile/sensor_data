@@ -16,7 +16,7 @@
 */
 ringbuff_t WiFibuff; 		//发送WIFI数据缓存
 uint8_t Serial3_RxFlag;  //串口3接收标志位
-vu16 USART3_RX_STA=0;   //接收数据状态
+vu16 USART3_RX_STA = 0;   //接收数据状态
 
 /*
 串口3初始化
@@ -30,11 +30,11 @@ void Serial3_Init(void)
 	
 	//EN接A7需要置一
 	GPIO_InitTypeDef GPIO_InitStructure;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOA,GPIO_Pin_7);
+//	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+//	GPIO_Init(GPIOA, &GPIO_InitStructure);
+//	GPIO_SetBits(GPIOA,GPIO_Pin_7);
 	
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;	//PB10是串口3的发送
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;

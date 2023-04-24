@@ -12,16 +12,23 @@
 #include "Serial2.h"
 #include "delay.h"
 
+
 //C库
 #include <string.h>
 #include <stdio.h>
+#include "cJSON.h"
+#include "LED.h"
+#include "oled.h"
+#include "GUI.h"
 
 
 #define PROID		"admin"
 
 #define AUTH_INFO	"7815csdd."
 
-#define DEVID		"admin676123"
+#define DEVID		"admin7815"
+
+uint8_t task_switch = 0xff;   //定义task开关初始化值
 
 
 extern unsigned char esp8266_buf[128];
@@ -78,7 +85,7 @@ _Bool OneNet_DevLink(void)
 		MQTT_DeleteBuffer(&mqttPacket);								//删包
 	}
 	else
-		UsartPrintf(USART_DEBUG, "WARN:	MQTT_PacketConnect Failed\r\n");
+		//UsartPrintf(USART_DEBUG, "WARN:	MQTT_PacketConnect Failed\r\n");
 	
 	return status;
 	
@@ -106,7 +113,7 @@ void OneNet_Subscribe(const char *topics[], unsigned char topic_cnt)
 	for(; i < topic_cnt; i++)
 		UsartPrintf(USART_DEBUG, "Subscribe Topic: %s\r\n", topics[i]);
 	
-	if(MQTT_PacketSubscribe(MQTT_SUBSCRIBE_ID, MQTT_QOS_LEVEL1, topics, topic_cnt, &mqttPacket) == 0)
+	if(MQTT_PacketSubscribe(MQTT_SUBSCRIBE_ID, MQTT_QOS_LEVEL0, topics, topic_cnt, &mqttPacket) == 0)
 	{
 		ESP8266_SendData(mqttPacket._data, mqttPacket._len);					//向平台发送订阅请求
 		
@@ -156,11 +163,13 @@ void OneNet_Publish(const char *topic, const char *msg)
 //==========================================================
 void OneNet_RevPro(unsigned char *cmd)
 {
-	
+	LED_Init();
 	MQTT_PACKET_STRUCTURE mqttPacket = {NULL, 0, 0, 0};								//协议包
 	
 	char *req_payload = NULL;
 	char *cmdid_topic = NULL;
+	char *led_topic = "/mytopic/sub";
+	char *task_topic = "/mytopic/task";
 	
 	unsigned short topic_len = 0;
 	unsigned short req_len = 0;
@@ -174,6 +183,9 @@ void OneNet_RevPro(unsigned char *cmd)
 	char *dataPtr = NULL;
 	char numBuf[10];
 	int num = 0;
+	
+	cJSON *json, *json_value;
+	cJSON *json_task, *task_value;
 	
 	type = MQTT_UnPacketRecv(cmd);
 	switch(type)
@@ -189,7 +201,7 @@ void OneNet_RevPro(unsigned char *cmd)
 				{
 					UsartPrintf(USART_DEBUG, "Tips:	Send CmdResp\r\n");
 					
-					ESP8266_SendData(mqttPacket._data, mqttPacket._len);			//回复命令
+					//ESP8266_SendData(mqttPacket._data, mqttPacket._len);			//回复命令
 					MQTT_DeleteBuffer(&mqttPacket);									//删包
 				}
 			}
@@ -203,34 +215,79 @@ void OneNet_RevPro(unsigned char *cmd)
 			{
 				UsartPrintf(USART_DEBUG, "topic: %s, topic_len: %d, payload: %s, payload_len: %d\r\n",
 																	cmdid_topic, topic_len, req_payload, req_len);
-				
-				switch(qos)
+				 
+				if((strcmp(cmdid_topic,led_topic) == 0))    //判断是否是led灯开关主题
 				{
-					case 1:															//收到publish的qos为1，设备需要回复Ack
-					
-						if(MQTT_PacketPublishAck(pkt_id, &mqttPacket) == 0)
+					//解析数据包
+					json = cJSON_Parse(req_payload);
+					if(!json)UsartPrintf(USART_DEBUG,"Error before: [%s]\n",cJSON_GetErrorPtr());
+					else
+					{
+						json_value = cJSON_GetObjectItem(json,"LED_SW");
+						UsartPrintf(USART_DEBUG,"json_value = %d\r\n",json_value);
+						if(json_value->valueint)//json_value > 0 且为整型
 						{
-							UsartPrintf(USART_DEBUG, "Tips:	Send PublishAck\r\n");
-							ESP8266_SendData(mqttPacket._data, mqttPacket._len);
-							MQTT_DeleteBuffer(&mqttPacket);
+							//打开led
+							LED2_ON();
+							//控制风扇转动
+							
 						}
-					
-					break;
-					
-					case 2:															//收到publish的qos为2，设备先回复Rec
-																					//平台回复Rel，设备再回复Comp
-						if(MQTT_PacketPublishRec(pkt_id, &mqttPacket) == 0)
+						else
 						{
-							UsartPrintf(USART_DEBUG, "Tips:	Send PublishRec\r\n");
-							ESP8266_SendData(mqttPacket._data, mqttPacket._len);
-							MQTT_DeleteBuffer(&mqttPacket);
+							//关闭led
+							LED2_OFF();
+							//关闭风扇转动
+							
 						}
-					
-					break;
-					
-					default:
-						break;
+					}
+					//删json包, 防止内存炸
+					cJSON_Delete(json);
+					delay_ms(500);
+				}else if((strcmp(cmdid_topic,task_topic) == 0))    //判断是否是task开关主题
+				{
+					//解析数据包
+					json_task = cJSON_Parse(req_payload);
+					if(!json_task)UsartPrintf(USART_DEBUG,"Error before: [%s]\n",cJSON_GetErrorPtr());
+					else
+					{
+						task_value = cJSON_GetObjectItem(json_task,"TASK_SW");
+						UsartPrintf(USART_DEBUG,"task_value = %d\r\n",task_value);
+						if(json_value->valueint)//json_value > 0 且为整型
+						{
+							task_switch = 1;   //如果有收到TASK_SW,且值为1就把task开关置为1
+						}
+					//删json包, 防止内存炸
+					cJSON_Delete(json_task);
+					delay_ms(500);
+					}
 				}
+				
+				/*
+				原始代码.
+				*/
+//				//解析数据包
+//				json = cJSON_Parse(req_payload);
+//				if(!json)UsartPrintf(USART_DEBUG,"Error before: [%s]\n",cJSON_GetErrorPtr());
+//				else
+//				{
+//					json_value = cJSON_GetObjectItem(json,"LED_SW");
+//					UsartPrintf(USART_DEBUG,"json_value = %d\r\n",json_value);
+//					if(json_value->valueint)//json_value > 0 且为整型
+//					{
+//						//打开led
+//						LED2_ON();
+//						UsartPrintf(USART_DEBUG,"kkkkkkkkkk json_value = %d\r\n",json_value);
+//					}
+//					else
+//					{
+//						//关闭led
+//						LED2_OFF();
+//						UsartPrintf(USART_DEBUG,"gggggggggg json_value = %d\r\n",json_value);
+//					}
+//				}
+//				//删json包, 防止内存炸
+//				cJSON_Delete(json);
+//				delay_ms(500);
 			}
 		
 		break;
