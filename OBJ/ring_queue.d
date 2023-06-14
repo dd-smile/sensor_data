@@ -1,5 +1,4 @@
-.\obj\ring_queue.o: System\Ring_queue.c
-.\obj\ring_queue.o: System\Ring_queue.h
+.\obj\ring_queue.o: Hardware\Ring_queue.c
 .\obj\ring_queue.o: .\Start\stm32f10x.h
 .\obj\ring_queue.o: .\Start\core_cm3.h
 .\obj\ring_queue.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
@@ -29,3 +28,4 @@
 .\obj\ring_queue.o: .\Libraries\stm32f10x_usart.h
 .\obj\ring_queue.o: .\Libraries\stm32f10x_wwdg.h
 .\obj\ring_queue.o: .\Libraries\misc.h
+.\obj\ring_queue.o: Hardware\Ring_queue.h

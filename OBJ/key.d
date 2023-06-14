@@ -30,3 +30,6 @@
 .\obj\key.o: .\Libraries\misc.h
 .\obj\key.o: .\System\Delay.h
 .\obj\key.o: Hardware\Key.h
+.\obj\key.o: Hardware\LED.h
+.\obj\key.o: Hardware\Fan.h
+.\obj\key.o: Hardware\Sg90.h

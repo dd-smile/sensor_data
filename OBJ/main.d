@@ -28,6 +28,7 @@
 .\obj\main.o: .\Libraries\stm32f10x_usart.h
 .\obj\main.o: .\Libraries\stm32f10x_wwdg.h
 .\obj\main.o: .\Libraries\misc.h
+.\obj\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\obj\main.o: .\Hardware\LED.h
 .\obj\main.o: .\System\delay.h
 .\obj\main.o: .\Hardware\Dht11.h
@@ -43,3 +44,6 @@
 .\obj\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\obj\main.o: .\Hardware\oled.h
 .\obj\main.o: .\Hardware\GUI.h
+.\obj\main.o: .\Hardware\Sg90.h
+.\obj\main.o: .\Hardware\Fan.h
+.\obj\main.o: .\Hardware\Key.h

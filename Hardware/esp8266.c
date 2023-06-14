@@ -8,8 +8,9 @@
 #include <stdio.h>
 #include "esp8266.h"
 
-//#define ESP8266_WIFI_INFO		"AT+CWJAP=\"iPhone 11\",\"7815csdd\"\r\n"
-#define ESP8266_WIFI_INFO		"AT+CWJAP=\"TP-LINK_6C10\",\"think123.\"\r\n"
+#define ESP8266_WIFI_INFO		"AT+CWJAP=\"iPhone 11\",\"7815csdd\"\r\n"
+//#define ESP8266_WIFI_INFO		"AT+CWJAP=\"Xiaomi_12X\",\"12345678900\"\r\n"
+//#define ESP8266_WIFI_INFO		"AT+CWJAP=\"TP-LINK_6C10\",\"think123.\"\r\n"
 #define ESP8266_ONENET_INFO		"AT+CIPSTART=\"TCP\",\"42.194.214.101\",1883\r\n"
 
 unsigned char esp8266_buf[128];
@@ -91,7 +92,7 @@ _Bool ESP8266_SendCmd(char *cmd, char *res)
 		{
 			if(strstr((const char *)esp8266_buf, res) != NULL)		//如果检索到关键词
 			{
-				printf("cmd_esp8266_buf:  %s\r\n",esp8266_buf);
+				//printf("cmd_esp8266_buf:  %s\r\n",esp8266_buf);
 				ESP8266_Clear();									//清空缓存
 				
 				return 0;

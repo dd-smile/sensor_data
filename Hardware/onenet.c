@@ -29,7 +29,7 @@
 #define DEVID		"admin7815"
 
 uint8_t task_switch = 0xff;   //定义task开关初始化值
-
+uint8_t led_switch = 0xff;    //定义led开关初始化值
 
 extern unsigned char esp8266_buf[128];
 
@@ -229,15 +229,13 @@ void OneNet_RevPro(unsigned char *cmd)
 						{
 							//打开led
 							LED2_ON();
-							//控制风扇转动
-							
+							led_switch = 1;  //用于开关喂食系统的标志位
 						}
 						else
 						{
 							//关闭led
 							LED2_OFF();
-							//关闭风扇转动
-							
+							led_switch = 0;
 						}
 					}
 					//删json包, 防止内存炸
@@ -254,6 +252,7 @@ void OneNet_RevPro(unsigned char *cmd)
 						UsartPrintf(USART_DEBUG,"task_value = %d\r\n",task_value);
 						if(json_value->valueint)//json_value > 0 且为整型
 						{
+							//UsartPrintf(USART_DEBUG,"kkkkkkkkkk json_value = %d\r\n",json_value);
 							task_switch = 1;   //如果有收到TASK_SW,且值为1就把task开关置为1
 						}
 					//删json包, 防止内存炸

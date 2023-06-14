@@ -282,11 +282,11 @@ void OLED_Init_GPIO(void)
 	GPIO_Init(GPIOB,&GPIO_InitStructure);
 	GPIO_SetBits(GPIOB,GPIO_Pin_12);
 	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;		//RST PB5
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;		//推挽输出
-	GPIO_Init(GPIOB,&GPIO_InitStructure);
-	GPIO_SetBits(GPIOB,GPIO_Pin_5);
+//	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;		//RST PB5
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;		//推挽输出
+//	GPIO_Init(GPIOB,&GPIO_InitStructure);
+//	GPIO_SetBits(GPIOB,GPIO_Pin_5);
 	
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;		//DC
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -310,7 +310,7 @@ void OLED_Init(void)
  	OLED_Init_GPIO(); //初始化GPIO
  	delay_ms(200);
 	//Serial2_SendString((uint8_t *)"cccc");
-	OLED_Reset();     //复位OLED
+//	OLED_Reset();     //复位OLED
 
 /**************初始化SSD1306*****************/	
 	OLED_WR_Byte(0xAE,OLED_CMD); /*display off*/

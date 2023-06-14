@@ -1,14 +1,11 @@
 #include "stm32f10x.h" 
 #ifndef __KEY_H__ 
 #define __KEY_H__
-#define KEY0 GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_4)// 读取按键 0
-#define KEY1 GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_3)// 读取按键 1
-#define WK_UP GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)// 读取按键 WK_UP
-#define KEY0_PRES 1 //1按下
-#define KEY1_PRES 2
-#define WKUP_PRES 3
+#define KEY_fan    EXTI_GetITStatus(EXTI_Line8)//GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_8)// 检测按键状态
+#define KEY_led    EXTI_GetITStatus(EXTI_Line4)//GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4)
+#define KEY_feed   EXTI_GetITStatus(EXTI_Line15)//GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_15) //EXTI_GetITStatus(EXTI_Line4)
 
 void Key_Init(void);
-uint8_t Key_scan(void);
+void EXTIx_Init(void);
 
 #endif 

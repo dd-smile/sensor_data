@@ -844,6 +844,26 @@
               <FileType>5</FileType>
               <FilePath>.\Hardware\SPI.h</FilePath>
             </File>
+            <File>
+              <FileName>Sg90.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Sg90.c</FilePath>
+            </File>
+            <File>
+              <FileName>Sg90.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\Sg90.h</FilePath>
+            </File>
+            <File>
+              <FileName>Fan.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Fan.c</FilePath>
+            </File>
+            <File>
+              <FileName>Fan.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\Fan.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
